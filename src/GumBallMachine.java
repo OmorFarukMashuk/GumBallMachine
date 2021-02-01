@@ -1,20 +1,35 @@
 
 public class GumBallMachine {
-	final static int SOLD_OUT = 0;
-	final static int NO_QUARTER = 1;
-	final static int HAS_QUARTER = 2;
-	final static int SOLD = 3;
 
-	int state = SOLD_OUT;
+	State noQuarterState;
+	State soldState;
+	State soldOutState;
+	State hasQuarterState;
+
+	State state = soldOutState;
 	int count = 0;
+
+	public GumBallMachine(int numberOfGumBalls) {
+		// TODO Auto-generated constructor stub
+		noQuarterState = new NoQuarterState(this);
+		soldState = new SoldState(this);
+		soldOutState = new SoldOutState(this);
+		hasQuarterState = new HasQuarterState(this);
+
+		this.count = numberOfGumBalls;
+
+		if (numberOfGumBalls > 0) {
+			state = noQuarterState;
+		}
+
+	}
 
 	@Override
 	public String toString() {
-		
+
 		System.out.println("\nGumball Machine");
 		System.out.println("Inventory: " + this.count);
 		if (this.count > 0) {
-			state = NO_QUARTER;
 			System.out.println("Machine is waiting for quarter");
 		} else {
 			System.out.println("Machine is sold out");
@@ -23,90 +38,73 @@ public class GumBallMachine {
 		return "";
 	}
 
-	public GumBallMachine(int count) {
-		// TODO Auto-generated constructor stub
-
-		this.count = count;
-		if (count > 0) {
-			state = NO_QUARTER;
-		}
-
-	}
-
 	public void insertQuarter() {
-		if (state == HAS_QUARTER) {
-			System.out.println("You can't insert another quarter");
-		} else if (state == NO_QUARTER) {
-			state = HAS_QUARTER;
-			System.out.println("You inserted a quarter");
-		} else if (state == SOLD_OUT) {
-			System.out.println("You can't insert a quarter. The machine is sold out");
+		state.insertQuarter();
 
-		} else if (state == SOLD) {
-			System.out.println("Please wait, We are already giving you a gunmball");
-
-		}
 	}
 
 	public void ejectQuarter() {
-		if (state == HAS_QUARTER) {
-			System.out.println("Quarter returned");
-			state = NO_QUARTER;
-		} else if (state == NO_QUARTER) {
-			state = HAS_QUARTER;
-			System.out.println("You haven't inserted a quarter");
-		} else if (state == SOLD) {
-			System.out.println("Sorry, you already turned the crank");
-
-		} else if (state == SOLD_OUT) {
-			System.out.println("You can't eject, You haven't inserted a quarter");
-
-		}
-		
-
+		state.ejectQuarter();
 	}
 
 	public void turnCrank() {
-		if (state == SOLD) {
-			System.out.println("Turning twice doesn't get you another gumball");
-			state = NO_QUARTER;
-		} else if (state == NO_QUARTER) {
-			System.out.println("You turned, but there is no quarter");
-		} else if (state == SOLD_OUT) {
-			System.out.println("You turned, but there is no gumball");
-
-		} else if (state == HAS_QUARTER) {
-			System.out.println("You turned...");
-			state = SOLD;
-			dispense();
-
-		}
-		
-
-
+		state.turnCrank();
+		state.dispense();
 	}
 
-	public void dispense() {
-		if (state == SOLD) {
-			System.out.println("A gumball comes rolling out the slot");
+	public void setState(State state) {
+		this.state = state;
+	}
+
+	public State getNoQuarterState() {
+		return noQuarterState;
+	}
+
+	public void setNoQuarterState(State noQuarterState) {
+		this.noQuarterState = noQuarterState;
+	}
+
+	public State getSoldState() {
+		return soldState;
+	}
+
+	public void setSoldState(State soldState) {
+		this.soldState = soldState;
+	}
+
+	public State getSoldOutState() {
+		return soldOutState;
+	}
+
+	public void setSoldOutState(State soldOutState) {
+		this.soldOutState = soldOutState;
+	}
+
+	public State getHasQuarterState() {
+		return hasQuarterState;
+	}
+
+	public void setHasQuarterState(State hasQuarterState) {
+		this.hasQuarterState = hasQuarterState;
+	}
+
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public State getState() {
+		return state;
+	}
+
+	public void releaseBall() {
+		System.out.println("A gumball comes rolling out the slot...");
+		if (count != 0) {
 			count--;
-			if (count == 0) {
-				System.out.println("Oops, out of gumballs!");
-				state = SOLD_OUT;
-
-			} else {
-				state = NO_QUARTER;
-			}
-		} else if (state == NO_QUARTER) {
-			System.out.println("You need to pay first");
-		} else if (state == SOLD_OUT) {
-			System.out.println("No gumball dispensed");
-
-		} else if (state == HAS_QUARTER) {
-			System.out.println("No gumball dispensed");
-
 		}
-
 	}
 
 }
