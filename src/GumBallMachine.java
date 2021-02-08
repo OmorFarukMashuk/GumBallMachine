@@ -1,4 +1,4 @@
-
+//state pattern
 public class GumBallMachine {
 
 	State noQuarterState;
